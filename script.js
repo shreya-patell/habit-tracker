@@ -14,7 +14,7 @@ habitForm.addEventListener('submit', (e) => {
 
   const habit = {
     name: habitName,
-    progress: Array(7).fill(0),
+    progress: Array(7).fill(0), // Progress for each day of the week
   };
   
   habits.push(habit);
@@ -39,7 +39,7 @@ function renderHabits() {
 }
 
 function markHabit(index) {
-  const today = new Date().getDay();
+  const today = new Date().getDay(); // 0 = Sunday, 6 = Saturday
   habits[index].progress[today] = 1;
   updateChart();
 }
@@ -54,7 +54,8 @@ function updateChart() {
   const datasets = habits.map((habit) => ({
     label: habit.name,
     data: habit.progress,
-    backgroundColor: `hsl(${Math.random() * 360}, 70%, 70%)`,
+    backgroundColor: createGradient(chartCanvas, habit.name),
+    borderRadius: 8,
   }));
 
   if (chart) {
@@ -72,6 +73,12 @@ function updateChart() {
       plugins: {
         legend: {
           position: 'top',
+          labels: {
+            font: {
+              family: 'Poppins',
+              size: 14,
+            },
+          },
         },
       },
       scales: {
@@ -86,6 +93,14 @@ function updateChart() {
       },
     },
   });
+}
+
+function createGradient(canvas, name) {
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, `hsl(${Math.random() * 360}, 70%, 80%)`);
+  gradient.addColorStop(1, `hsl(${Math.random() * 360}, 50%, 60%)`);
+  return gradient;
 }
 
 renderHabits();
